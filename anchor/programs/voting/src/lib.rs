@@ -4,67 +4,43 @@ use anchor_lang::prelude::*;
 
 declare_id!("AsjZ3kWAUSQRNt2pZVeJkywhZ6gpLpHZmJjduPmKZDZZ");
 
+mod error;
+mod constants;
+mod state;
+mod instructions;
+
+pub use instructions::*;
+pub use state::*;
+
 #[program]
 pub mod voting {
+
     use super::*;
 
-  pub fn close(_ctx: Context<CloseVoting>) -> Result<()> {
-    Ok(())
-  }
+    pub fn initialize_poll(ctx: Context<InitializePoll>, 
+        poll_id: u64,
+        description: String,
+        poll_start: u64,
+        poll_end: u64,
+    ) -> Result<()> {
+        process_initialize_poll(ctx, poll_id, description, poll_start, poll_end)
+    }
 
-  pub fn decrement(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.voting.count = ctx.accounts.voting.count.checked_sub(1).unwrap();
-    Ok(())
-  }
+    pub fn initialize_candidate(ctx: Context<InitializeCandidate>, 
+        candidate_name: String,
+        poll_id: u64,
+    ) -> Result<()> {
+        process_initialize_candidate(ctx, candidate_name, poll_id)
+    }
 
-  pub fn increment(ctx: Context<Update>) -> Result<()> {
-    ctx.accounts.voting.count = ctx.accounts.voting.count.checked_add(1).unwrap();
-    Ok(())
-  }
+    pub fn vote(ctx: Context<Vote>, 
+        _candidate_name: String, 
+        _poll_id: u64) -> Result<()> {
 
-  pub fn initialize(_ctx: Context<InitializeVoting>) -> Result<()> {
-    Ok(())
-  }
-
-  pub fn set(ctx: Context<Update>, value: u8) -> Result<()> {
-    ctx.accounts.voting.count = value.clone();
-    Ok(())
-  }
+        let candidate = &mut ctx.accounts.candidate_account;
+        candidate.candidate_votes += 1;
+        msg!("Votes for candidate: {}", candidate.candidate_votes);
+        Ok(())
+    }
 }
 
-#[derive(Accounts)]
-pub struct InitializeVoting<'info> {
-  #[account(mut)]
-  pub payer: Signer<'info>,
-
-  #[account(
-  init,
-  space = 8 + Voting::INIT_SPACE,
-  payer = payer
-  )]
-  pub voting: Account<'info, Voting>,
-  pub system_program: Program<'info, System>,
-}
-#[derive(Accounts)]
-pub struct CloseVoting<'info> {
-  #[account(mut)]
-  pub payer: Signer<'info>,
-
-  #[account(
-  mut,
-  close = payer, // close account and return lamports to payer
-  )]
-  pub voting: Account<'info, Voting>,
-}
-
-#[derive(Accounts)]
-pub struct Update<'info> {
-  #[account(mut)]
-  pub voting: Account<'info, Voting>,
-}
-
-#[account]
-#[derive(InitSpace)]
-pub struct Voting {
-  count: u8,
-}

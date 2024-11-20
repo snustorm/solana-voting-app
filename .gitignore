@@ -15,6 +15,7 @@
 
 # production
 /build
+/anchor/target
 
 # misc
 .DS_Store
