@@ -4,6 +4,10 @@
 ![voting](https://github.com/user-attachments/assets/a3ac71b8-073b-49b0-b592-975e2a069a5d)
 
 
+## BLINK Implementation
+<img width="1377" alt="截屏2024-11-22 16 20 44" src="https://github.com/user-attachments/assets/e56816d7-eca7-44a3-9cdd-d52902c14b28">
+
+
 ## Getting Started
 
 ### Prerequisites
