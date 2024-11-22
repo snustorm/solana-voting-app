@@ -1,4 +1,8 @@
-# voting
+# solana-voting-app
+
+## Program Structure
+![voting](https://github.com/user-attachments/assets/a3ac71b8-073b-49b0-b592-975e2a069a5d)
+
 
 ## Getting Started
 
